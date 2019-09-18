@@ -7,7 +7,7 @@
 #define _ADAFRUIT_TFTLCD_16BIT_STM32_H_
 
 
-#include <Adafruit_GFX_AS.h>
+#include <Adafruit_GFX.h>
 
 //#define USE_FSMC 1 // use FSCM interface instead raw GPIO access
 
@@ -23,8 +23,8 @@
 
 /*****************************************************************************/
 #ifndef TFTWIDTH
-  #define TFTWIDTH   320
-  #define TFTHEIGHT  480
+  #define TFTWIDTH   240
+  #define TFTHEIGHT  320
 #endif
 // Initialization command tables for different LCD controllers
 #define TFTLCD_DELAY 0xFF
@@ -69,28 +69,20 @@
 
 #else
 
-  // use normal GPIO access
-  #include <libmaple/gpio.h>
-
+#ifndef TFT_DATA_PORT
   // Data port
-  #if defined (__STM32F1__)
-    #define TFT_DATA_PORT GPIOB
-  #elif defined (__STM32F4__)
-    #define TFT_DATA_PORT GPIOD
-  #endif
-
+  #define TFT_DATA_PORT GPIOB
+#endif
   //Control port and pins |WR |RS |CS
   // All of them must have common IO port!
-  #define TFT_WR_PIN        PA1
-  #define TFT_RS_PIN        PA2
-  #define TFT_CS_PIN        PA3
-
-  #if defined (__STM32F1__)
-    #define TFT_CNTRL_PORT GPIOA // must be common to all control pins
-  #elif defined (__STM32F4__)
-    #define TFT_CNTRL_PORT GPIOC
-  #endif
-
+#ifndef TFT_CS_PIN
+  #define TFT_WR_PIN        PC1
+  #define TFT_RS_PIN        PC2
+  #define TFT_CS_PIN        PC0
+#endif
+#ifndef TFT_CNTRL_PORT
+    #define TFT_CNTRL_PORT GPIOC // must be common to all control pins
+#endif
   #define RST_ACTIVE    digitalWrite(TFT_RST_PIN, LOW)
   #define RST_IDLE      digitalWrite(TFT_RST_PIN, HIGH)
   // used TFT does not support RD operation
@@ -136,16 +128,16 @@
   #endif // used TFT cannot be read
 
   // configure the pins to output
-  #if defined (__STM32F1__)
-    #define setWriteDir() { TFT_DATA_PORT->regs->CRL = 0x33333333; TFT_DATA_PORT->regs->CRH = 0x33333333; }
+  #if defined (STM32F1)
+    #define setWriteDir() { TFT_DATA_PORT->CRL = 0x33333333; TFT_DATA_PORT->CRH = 0x33333333; }
   #elif defined (__STM32F4__)
     #define setWriteDir() { TFT_DATA_PORT->regs->MODER = 0x55555555; }
   #endif
 
 #endif // USE_FSMC
-
-#define TFT_RST_PIN     PC15
-
+#ifndef TFT_RST_PIN
+#define TFT_RST_PIN     PC4
+#endif
 /*****************************************************************************/
 
 #define swap(a, b) { int16_t t = a; a = b; b = t; }

@@ -44,7 +44,7 @@ Done!
 
 #include "ili9341.h"
 
-#define ILI9486 1
+#define ILI9486 0
 
 /**/
 #define TFTLCD_DELAY8 0xFF
@@ -144,11 +144,11 @@ const uint8_t wake_on[] = {
 /*****************************************************************************/
 void ili9341_begin(void)
 {
-//	Serial.println("\nILI9341 begin...");
+	Serial.println("\nILI9341 begin...");
 	init_table(reset_off, sizeof(reset_off));
-	//init_table(ILI9341_regValues_ada, sizeof(ILI9341_regValues_ada));   //can change PIXFMT
+	// init_table(ILI9341_regValues_ada, sizeof(ILI9341_regValues_ada));   //can change PIXFMT
 	init_table(wake_on, sizeof(wake_on));
-	//init_table(ILI9341_regValues_post, sizeof(ILI9341_regValues_post));
+	// init_table(ILI9341_regValues_post, sizeof(ILI9341_regValues_post));
 }
 
 /*****************************************************************************/
